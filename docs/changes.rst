@@ -1,6 +1,13 @@
 Changes
 =======
 
+Version 1.x.x
+-------------
+
+Unreleased
+
+- Move the project to the pallets-eco organization. :pr:`602`
+
 Version 1.2.1
 -------------
 

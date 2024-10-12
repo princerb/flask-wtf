@@ -67,7 +67,8 @@ def test_file_allowed(form):
 
 def test_file_allowed_uploadset(app, form):
     pytest.importorskip("flask_uploads")
-    from flask_uploads import UploadSet, configure_uploads
+    from flask_uploads import configure_uploads
+    from flask_uploads import UploadSet
 
     app.config["UPLOADS_DEFAULT_DEST"] = "uploads"
     txt = UploadSet("txt", extensions=("txt",))
@@ -114,10 +115,8 @@ def test_file_size_invalid_file_size_fails_validation(
     with path.open("rb") as file:
         f = form(file=FileStorage(file))
         assert not f.validate()
-        assert f.file.errors[
-            0
-        ] == "File must be between {min_size} and {max_size} bytes.".format(
-            min_size=min_size, max_size=max_size
+        assert (
+            f.file.errors[0] == f"File must be between {min_size} and {max_size} bytes."
         )
 
 
@@ -190,7 +189,8 @@ def test_files_allowed(form):
 
 def test_files_allowed_uploadset(app, form):
     pytest.importorskip("flask_uploads")
-    from flask_uploads import UploadSet, configure_uploads
+    from flask_uploads import configure_uploads
+    from flask_uploads import UploadSet
 
     app.config["UPLOADS_DEFAULT_DEST"] = "uploads"
     txt = UploadSet("txt", extensions=("txt",))
@@ -245,10 +245,9 @@ def test_file_size_invalid_file_sizes_fails_validation(
     with path.open("rb") as file:
         f = form(files=[FileStorage(file)])
         assert not f.validate()
-        assert f.files.errors[
-            0
-        ] == "File must be between {min_size} and {max_size} bytes.".format(
-            min_size=min_size, max_size=max_size
+        assert (
+            f.files.errors[0]
+            == f"File must be between {min_size} and {max_size} bytes."
         )
 
 
@@ -257,10 +256,9 @@ def test_files_length(form, min_num=2, max_num=3):
 
     f = form(files=[FileStorage("1")])
     assert not f.validate()
-    assert f.files.errors[
-        0
-    ] == "Field must be between {min_num} and {max_num} characters long.".format(
-        min_num=min_num, max_num=max_num
+    assert (
+        f.files.errors[0]
+        == f"Field must be between {min_num} and {max_num} characters long."
     )
 
     f = form(

@@ -83,7 +83,7 @@ First time setup
 
     .. code-block:: text
 
-        $ git clone https://github.com/wtforms/flask-wtf
+        $ git clone https://github.com/pallets-eco/flask-wtf
         $ cd flask-wtf
 
 -   Add your fork as a remote to push your work to. Replace
@@ -130,7 +130,7 @@ First time setup
 .. _username: https://docs.github.com/en/github/using-git/setting-your-username-in-git
 .. _email: https://docs.github.com/en/github/setting-up-and-managing-your-github-user-account/setting-your-commit-email-address
 .. _GitHub account: https://github.com/join
-.. _Fork: https://github.com/wtforms/flask-wtf/fork
+.. _Fork: https://github.com/pallets-eco/flask-wtf/fork
 .. _Clone: https://docs.github.com/en/github/getting-started-with-github/fork-a-repo#step-2-create-a-local-clone-of-your-fork
 
 

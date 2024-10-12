@@ -7,6 +7,7 @@ Version 1.x.x
 Unreleased
 
 - Move the project to the pallets-eco organization. :pr:`602`
+- Stop support for Python 3.8. Start support for Python 3.13. :pr:`603`
 
 Version 1.2.1
 -------------

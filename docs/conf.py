@@ -33,7 +33,9 @@ html_context = {
     "project_links": [
         ProjectLink("PyPI Releases", "https://pypi.org/project/Flask-WTF/"),
         ProjectLink("Source Code", "https://github.com/pallets-eco/flask-wtf/"),
-        ProjectLink("Issue Tracker", "https://github.com/pallets-eco/flask-wtf/issues/"),
+        ProjectLink(
+            "Issue Tracker", "https://github.com/pallets-eco/flask-wtf/issues/"
+        ),
         ProjectLink("Chat", "https://discord.gg/pallets"),
     ]
 }

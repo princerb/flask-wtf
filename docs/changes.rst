@@ -1,10 +1,10 @@
 Changes
 =======
 
-Version 1.x.x
+Version 1.2.2
 -------------
 
-Unreleased
+Released 2024-10-20
 
 - Move the project to the pallets-eco organization. :pr:`602`
 - Stop support for Python 3.8. Start support for Python 3.13. :pr:`603`

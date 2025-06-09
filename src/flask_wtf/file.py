@@ -1,8 +1,10 @@
 from collections import abc
+from typing import Any, List, Optional, Union
 
 from werkzeug.datastructures import FileStorage
 from wtforms import FileField as _FileField
 from wtforms import MultipleFileField as _MultipleFileField
+from wtforms import Form, Field
 from wtforms.validators import DataRequired
 from wtforms.validators import StopValidation
 from wtforms.validators import ValidationError
@@ -11,7 +13,7 @@ from wtforms.validators import ValidationError
 class FileField(_FileField):
     """Werkzeug-aware subclass of :class:`wtforms.fields.FileField`."""
 
-    def process_formdata(self, valuelist):
+    def process_formdata(self, valuelist: List[FileStorage]) -> None:
         valuelist = (x for x in valuelist if isinstance(x, FileStorage) and x)
         data = next(valuelist, None)
 
@@ -27,7 +29,7 @@ class MultipleFileField(_MultipleFileField):
     .. versionadded:: 1.2.0
     """
 
-    def process_formdata(self, valuelist):
+    def process_formdata(self, valuelist: List[FileStorage]) -> None:
         valuelist = (x for x in valuelist if isinstance(x, FileStorage) and x)
         data = list(valuelist) or None
 
@@ -46,7 +48,7 @@ class FileRequired(DataRequired):
     You can also use the synonym ``file_required``.
     """
 
-    def __call__(self, form, field):
+    def __call__(self, form: Form, field: Field) -> None:
         field_data = [field.data] if not isinstance(field.data, list) else field.data
         if not (
             all(isinstance(x, FileStorage) and x for x in field_data) and field_data
@@ -70,11 +72,11 @@ class FileAllowed:
     You can also use the synonym ``file_allowed``.
     """
 
-    def __init__(self, upload_set, message=None):
+    def __init__(self, upload_set: Union[List[str], Any], message: Optional[str] = None) -> None:
         self.upload_set = upload_set
         self.message = message
 
-    def __call__(self, form, field):
+    def __call__(self, form: Form, field: Field) -> None:
         field_data = [field.data] if not isinstance(field.data, list) else field.data
         if not (
             all(isinstance(x, FileStorage) and x for x in field_data) and field_data
@@ -116,12 +118,12 @@ class FileSize:
     You can also use the synonym ``file_size``.
     """
 
-    def __init__(self, max_size, min_size=0, message=None):
+    def __init__(self, max_size: int, min_size: int = 0, message: Optional[str] = None) -> None:
         self.min_size = min_size
         self.max_size = max_size
         self.message = message
 
-    def __call__(self, form, field):
+    def __call__(self, form: Form, field: Field) -> None:
         field_data = [field.data] if not isinstance(field.data, list) else field.data
         if not (
             all(isinstance(x, FileStorage) and x for x in field_data) and field_data

@@ -2,9 +2,10 @@ import hashlib
 import hmac
 import logging
 import os
+from typing import Any, Callable, Optional, Set, Union, TypeVar
 from urllib.parse import urlparse
 
-from flask import Blueprint
+from flask import Blueprint, Flask
 from flask import current_app
 from flask import g
 from flask import request
@@ -19,8 +20,10 @@ from wtforms.csrf.core import CSRF
 __all__ = ("generate_csrf", "validate_csrf", "CSRFProtect")
 logger = logging.getLogger(__name__)
 
+F = TypeVar('F', bound=Callable[..., object])
 
-def generate_csrf(secret_key=None, token_key=None):
+
+def generate_csrf(secret_key: Optional[str] = None, token_key: Optional[str] = None) -> str:
     """Generate a CSRF token. The token is cached for a request, so multiple
     calls to this function will generate the same token.
 
@@ -63,7 +66,7 @@ def generate_csrf(secret_key=None, token_key=None):
     return g.get(field_name)
 
 
-def validate_csrf(data, secret_key=None, time_limit=None, token_key=None):
+def validate_csrf(data: str, secret_key: Optional[str] = None, time_limit: Optional[int] = None, token_key: Optional[str] = None) -> None:
     """Check if the given data is a valid CSRF token. This compares the given
     signed token to the one stored in the session.
 
@@ -116,8 +119,8 @@ def validate_csrf(data, secret_key=None, time_limit=None, token_key=None):
 
 
 def _get_config(
-    value, config_name, default=None, required=True, message="CSRF is not configured."
-):
+    value: Any, config_name: str, default: Any = None, required: bool = True, message: str = "CSRF is not configured."
+) -> Any:
     """Find config value based on provided value, Flask config, and default
     value.
 
@@ -139,16 +142,16 @@ def _get_config(
 
 
 class _FlaskFormCSRF(CSRF):
-    def setup_form(self, form):
+    def setup_form(self, form: Any) -> None:
         self.meta = form.meta
         return super().setup_form(form)
 
-    def generate_csrf_token(self, csrf_token_field):
+    def generate_csrf_token(self, csrf_token_field: Any) -> str:
         return generate_csrf(
             secret_key=self.meta.csrf_secret, token_key=self.meta.csrf_field_name
         )
 
-    def validate_csrf_token(self, form, field):
+    def validate_csrf_token(self, form: Any, field: Any) -> None:
         if g.get("csrf_valid", False):
             # already validated by CSRFProtect
             return
@@ -180,14 +183,14 @@ class CSRFProtect:
     See the :ref:`csrf` documentation.
     """
 
-    def __init__(self, app=None):
-        self._exempt_views = set()
-        self._exempt_blueprints = set()
+    def __init__(self, app: Optional[Flask] = None) -> None:
+        self._exempt_views: Set[str] = set()
+        self._exempt_blueprints: Set[Blueprint] = set()
 
         if app:
             self.init_app(app)
 
-    def init_app(self, app):
+    def init_app(self, app: Flask) -> None:
         app.extensions["csrf"] = self
 
         app.config.setdefault("WTF_CSRF_ENABLED", True)
@@ -204,7 +207,7 @@ class CSRFProtect:
         app.context_processor(lambda: {"csrf_token": generate_csrf})
 
         @app.before_request
-        def csrf_protect():
+        def csrf_protect() -> None:
             if not app.config["WTF_CSRF_ENABLED"]:
                 return
 
@@ -253,7 +256,7 @@ class CSRFProtect:
 
         return None
 
-    def protect(self):
+    def protect(self) -> None:
         if request.method not in current_app.config["WTF_CSRF_METHODS"]:
             return
 
@@ -274,7 +277,7 @@ class CSRFProtect:
 
         g.csrf_valid = True  # mark this request as CSRF valid
 
-    def exempt(self, view):
+    def exempt(self, view: Union[F, Blueprint, str]) -> Union[F, Blueprint, str]:
         """Mark a view or blueprint to be excluded from CSRF protection.
 
         ::
@@ -303,7 +306,7 @@ class CSRFProtect:
         self._exempt_views.add(view_location)
         return view
 
-    def _error_response(self, reason):
+    def _error_response(self, reason: str) -> None:
         raise CSRFError(reason)
 
 
@@ -318,7 +321,7 @@ class CSRFError(BadRequest):
     description = "CSRF validation failed."
 
 
-def same_origin(current_uri, compare_uri):
+def same_origin(current_uri: str, compare_uri: str) -> bool:
     current = urlparse(current_uri)
     compare = urlparse(compare_uri)
 

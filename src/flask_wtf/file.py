@@ -1,5 +1,5 @@
 from collections import abc
-from typing import Any, List, Optional, Union
+from typing import Any, Optional, Union
 
 from werkzeug.datastructures import FileStorage
 from wtforms import FileField as _FileField
@@ -13,7 +13,7 @@ from wtforms.validators import ValidationError
 class FileField(_FileField):
     """Werkzeug-aware subclass of :class:`wtforms.fields.FileField`."""
 
-    def process_formdata(self, valuelist: List[FileStorage]) -> None:
+    def process_formdata(self, valuelist: list[FileStorage]) -> None:
         valuelist = (x for x in valuelist if isinstance(x, FileStorage) and x)
         data = next(valuelist, None)
 
@@ -29,7 +29,7 @@ class MultipleFileField(_MultipleFileField):
     .. versionadded:: 1.2.0
     """
 
-    def process_formdata(self, valuelist: List[FileStorage]) -> None:
+    def process_formdata(self, valuelist: list[FileStorage]) -> None:
         valuelist = (x for x in valuelist if isinstance(x, FileStorage) and x)
         data = list(valuelist) or None
 
@@ -72,7 +72,7 @@ class FileAllowed:
     You can also use the synonym ``file_allowed``.
     """
 
-    def __init__(self, upload_set: Union[List[str], Any], message: Optional[str] = None) -> None:
+    def __init__(self, upload_set: Union[list[str], Any], message: Optional[str] = None) -> None:
         self.upload_set = upload_set
         self.message = message
 

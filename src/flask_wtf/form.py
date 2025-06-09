@@ -1,4 +1,4 @@
-from typing import Any, Dict, Generator, Optional, Type, TypeVar, Union
+from typing import Any, Generator, Optional, TypeVar, Union
 from flask import current_app
 from flask import request
 from flask import session
@@ -33,7 +33,7 @@ class FlaskForm(Form):
     """
 
     class Meta(DefaultMeta):
-        csrf_class: Type[_FlaskFormCSRF] = _FlaskFormCSRF
+        csrf_class: type[_FlaskFormCSRF] = _FlaskFormCSRF
         csrf_context: Any = session  # not used, provided for custom csrf_class
 
         @cached_property
@@ -82,7 +82,7 @@ class FlaskForm(Form):
 
         return _is_submitted()
 
-    def validate_on_submit(self, extra_validators: Optional[Dict[str, Any]] = None) -> bool:
+    def validate_on_submit(self, extra_validators: Optional[dict[str, Any]] = None) -> bool:
         """Call :meth:`validate` only if the form is submitted.
         This is a shortcut for ``form.is_submitted() and form.validate()``.
         """

@@ -2,7 +2,7 @@ import hashlib
 import hmac
 import logging
 import os
-from typing import Any, Callable, Optional, Set, Union, TypeVar
+from typing import Any, Callable, Optional, Union, TypeVar
 from urllib.parse import urlparse
 
 from flask import Blueprint, Flask
@@ -184,8 +184,8 @@ class CSRFProtect:
     """
 
     def __init__(self, app: Optional[Flask] = None) -> None:
-        self._exempt_views: Set[str] = set()
-        self._exempt_blueprints: Set[Blueprint] = set()
+        self._exempt_views: set[str] = set()
+        self._exempt_blueprints: set[Blueprint] = set()
 
         if app:
             self.init_app(app)

@@ -1,4 +1,4 @@
-from typing import Optional
+from __future__ import annotations
 
 from babel import support
 from flask import current_app
@@ -9,7 +9,7 @@ from wtforms.i18n import messages_path
 __all__ = ("Translations", "translations")
 
 
-def _get_translations() -> Optional[support.Translations]:
+def _get_translations() -> support.NullTranslations | support.Translations | None:
     """Returns the correct gettext translations.
     Copy from flask-babel with some modifications.
     """

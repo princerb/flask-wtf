@@ -1,8 +1,11 @@
+from __future__ import annotations
+
+import collections.abc as cabc
 import hashlib
 import hmac
 import logging
 import os
-from typing import Any, Callable, Optional, Union, TypeVar
+import typing as t
 from urllib.parse import urlparse
 
 from flask import Blueprint, Flask
@@ -20,10 +23,8 @@ from wtforms.csrf.core import CSRF
 __all__ = ("generate_csrf", "validate_csrf", "CSRFProtect")
 logger = logging.getLogger(__name__)
 
-F = TypeVar('F', bound=Callable[..., object])
 
-
-def generate_csrf(secret_key: Optional[str] = None, token_key: Optional[str] = None) -> str:
+def generate_csrf(secret_key: str | None = None, token_key: str | None = None) -> str:
     """Generate a CSRF token. The token is cached for a request, so multiple
     calls to this function will generate the same token.
 
@@ -66,7 +67,7 @@ def generate_csrf(secret_key: Optional[str] = None, token_key: Optional[str] = N
     return g.get(field_name)
 
 
-def validate_csrf(data: str, secret_key: Optional[str] = None, time_limit: Optional[int] = None, token_key: Optional[str] = None) -> None:
+def validate_csrf(data: str, secret_key: str | None = None, time_limit: int | None = None, token_key: str | None = None) -> None:
     """Check if the given data is a valid CSRF token. This compares the given
     signed token to the one stored in the session.
 
@@ -119,8 +120,8 @@ def validate_csrf(data: str, secret_key: Optional[str] = None, time_limit: Optio
 
 
 def _get_config(
-    value: Any, config_name: str, default: Any = None, required: bool = True, message: str = "CSRF is not configured."
-) -> Any:
+    value: t.Any, config_name: str, default: t.Any = None, required: bool = True, message: str = "CSRF is not configured."
+) -> t.Any:
     """Find config value based on provided value, Flask config, and default
     value.
 
@@ -142,16 +143,16 @@ def _get_config(
 
 
 class _FlaskFormCSRF(CSRF):
-    def setup_form(self, form: Any) -> None:
+    def setup_form(self, form: t.Any) -> None:
         self.meta = form.meta
         return super().setup_form(form)
 
-    def generate_csrf_token(self, csrf_token_field: Any) -> str:
+    def generate_csrf_token(self, csrf_token_field: t.Any) -> str:
         return generate_csrf(
             secret_key=self.meta.csrf_secret, token_key=self.meta.csrf_field_name
         )
 
-    def validate_csrf_token(self, form: Any, field: Any) -> None:
+    def validate_csrf_token(self, form: t.Any, field: t.Any) -> None:
         if g.get("csrf_valid", False):
             # already validated by CSRFProtect
             return
@@ -183,7 +184,7 @@ class CSRFProtect:
     See the :ref:`csrf` documentation.
     """
 
-    def __init__(self, app: Optional[Flask] = None) -> None:
+    def __init__(self, app: Flask | None = None) -> None:
         self._exempt_views: set[str] = set()
         self._exempt_blueprints: set[Blueprint] = set()
 
@@ -277,7 +278,7 @@ class CSRFProtect:
 
         g.csrf_valid = True  # mark this request as CSRF valid
 
-    def exempt(self, view: Union[F, Blueprint, str]) -> Union[F, Blueprint, str]:
+    def exempt(self, view: cabc.Callable[..., object] | Blueprint | str) -> cabc.Callable[..., object] | Blueprint | str:
         """Mark a view or blueprint to be excluded from CSRF protection.
 
         ::

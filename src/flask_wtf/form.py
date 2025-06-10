@@ -1,4 +1,8 @@
-from typing import Any, Generator, Optional, TypeVar, Union
+from __future__ import annotations
+
+import collections.abc as cabc
+import typing as t
+
 from flask import current_app
 from flask import request
 from flask import session
@@ -21,8 +25,8 @@ except ImportError:
 SUBMIT_METHODS = {"POST", "PUT", "PATCH", "DELETE"}
 _Auto = object()
 
-_AutoType = TypeVar('_AutoType', bound=object)
-T = TypeVar('T', bound='FlaskForm')
+_AutoType = t.TypeVar('_AutoType', bound=object)
+
 
 class FlaskForm(Form):
     """Flask-specific subclass of WTForms :class:`~wtforms.form.Form`.
@@ -34,7 +38,7 @@ class FlaskForm(Form):
 
     class Meta(DefaultMeta):
         csrf_class: type[_FlaskFormCSRF] = _FlaskFormCSRF
-        csrf_context: Any = session  # not used, provided for custom csrf_class
+        csrf_context: t.Any = session  # not used, provided for custom csrf_class
 
         @cached_property
         def csrf(self) -> bool:
@@ -52,7 +56,7 @@ class FlaskForm(Form):
         def csrf_time_limit(self) -> int:
             return current_app.config.get("WTF_CSRF_TIME_LIMIT", 3600)
 
-        def wrap_formdata(self, form: 'FlaskForm', formdata: Union[_AutoType, CombinedMultiDict, ImmutableMultiDict, None]) -> Optional[Union[CombinedMultiDict, ImmutableMultiDict]]:
+        def wrap_formdata(self, form: 'FlaskForm', formdata: _AutoType | CombinedMultiDict | ImmutableMultiDict | None) -> CombinedMultiDict | ImmutableMultiDict | None:
             if formdata is _Auto:
                 if _is_submitted():
                     if request.files:
@@ -66,13 +70,13 @@ class FlaskForm(Form):
 
             return formdata
 
-        def get_translations(self, form: 'FlaskForm') -> Optional[Any]:
+        def get_translations(self, form: 'FlaskForm') -> t.Any | None:
             if not current_app.config.get("WTF_I18N_ENABLED", True):
                 return super().get_translations(form)
 
             return translations
 
-    def __init__(self, formdata: Any = _Auto, **kwargs: Any) -> None:
+    def __init__(self, formdata: t.Any = _Auto, **kwargs: t.Any) -> None:
         super().__init__(formdata=formdata, **kwargs)
 
     def is_submitted(self) -> bool:
@@ -82,13 +86,13 @@ class FlaskForm(Form):
 
         return _is_submitted()
 
-    def validate_on_submit(self, extra_validators: Optional[dict[str, Any]] = None) -> bool:
+    def validate_on_submit(self, extra_validators: dict[str, t.Any] | None = None) -> bool:
         """Call :meth:`validate` only if the form is submitted.
         This is a shortcut for ``form.is_submitted() and form.validate()``.
         """
         return self.is_submitted() and self.validate(extra_validators=extra_validators)
 
-    def hidden_tag(self, *fields: Union[str, Any]) -> Markup:
+    def hidden_tag(self, *fields: str | t.Any) -> Markup:
         """Render the form's hidden fields in one call.
 
         A field is considered hidden if it uses the
@@ -109,7 +113,7 @@ class FlaskForm(Form):
            Skip passed names that don't exist.
         """
 
-        def hidden_fields(fields: Union[tuple, list]) -> Generator[Any, None, None]:
+        def hidden_fields(fields: tuple | list) -> cabc.Generator[t.Any, None, None]:
             for f in fields:
                 if isinstance(f, str):
                     f = getattr(self, f, None)

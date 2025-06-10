@@ -4,9 +4,10 @@ import collections.abc as cabc
 import typing as t
 
 from werkzeug.datastructures import FileStorage
+from wtforms import Field
 from wtforms import FileField as _FileField
+from wtforms import Form
 from wtforms import MultipleFileField as _MultipleFileField
-from wtforms import Form, Field
 from wtforms.validators import DataRequired
 from wtforms.validators import StopValidation
 from wtforms.validators import ValidationError
@@ -74,12 +75,16 @@ class FileAllowed:
     You can also use the synonym ``file_allowed``.
     """
 
-    def __init__(self, upload_set: list[str] | t.Any, message: str | None = None) -> None:
+    def __init__(
+        self, upload_set: list[str] | t.Any, message: str | None = None
+    ) -> None:
         self.upload_set = upload_set
         self.message = message
 
     def __call__(self, form: Form, field: Field) -> None:
-        field_data : list[FileStorage] = [field.data] if not isinstance(field.data, list) else field.data
+        field_data: list[FileStorage] = (
+            [field.data] if not isinstance(field.data, list) else field.data
+        )
         if not (
             all(isinstance(x, FileStorage) and x for x in field_data) and field_data
         ):
@@ -120,13 +125,17 @@ class FileSize:
     You can also use the synonym ``file_size``.
     """
 
-    def __init__(self, max_size: int, min_size: int = 0, message: str | None = None) -> None:
+    def __init__(
+        self, max_size: int, min_size: int = 0, message: str | None = None
+    ) -> None:
         self.min_size = min_size
         self.max_size = max_size
         self.message = message
 
     def __call__(self, form: Form, field: Field) -> None:
-        field_data : list[FileStorage] = [field.data] if not isinstance(field.data, list) else field.data
+        field_data: list[FileStorage] = (
+            [field.data] if not isinstance(field.data, list) else field.data
+        )
         if not (
             all(isinstance(x, FileStorage) and x for x in field_data) and field_data
         ):

@@ -16,6 +16,8 @@ class RecaptchaField(Field):
     # error message if recaptcha validation fails
     recaptcha_error: str | None = None
 
-    def __init__(self, label: str = "", validators: list[t.Any] | None = None, **kwargs: t.Any) -> None:
+    def __init__(
+        self, label: str = "", validators: list[t.Any] | None = None, **kwargs: t.Any
+    ) -> None:
         validators = validators or [Recaptcha()]
         super().__init__(label, validators, **kwargs)

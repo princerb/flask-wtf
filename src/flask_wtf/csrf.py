@@ -8,8 +8,9 @@ import os
 import typing as t
 from urllib.parse import urlparse
 
-from flask import Blueprint, Flask
+from flask import Blueprint
 from flask import current_app
+from flask import Flask
 from flask import g
 from flask import request
 from flask import session
@@ -67,7 +68,12 @@ def generate_csrf(secret_key: str | None = None, token_key: str | None = None) -
     return g.get(field_name)
 
 
-def validate_csrf(data: str, secret_key: str | None = None, time_limit: int | None = None, token_key: str | None = None) -> None:
+def validate_csrf(
+    data: str,
+    secret_key: str | None = None,
+    time_limit: int | None = None,
+    token_key: str | None = None,
+) -> None:
     """Check if the given data is a valid CSRF token. This compares the given
     signed token to the one stored in the session.
 
@@ -120,7 +126,11 @@ def validate_csrf(data: str, secret_key: str | None = None, time_limit: int | No
 
 
 def _get_config(
-    value: t.Any, config_name: str, default: t.Any = None, required: bool = True, message: str = "CSRF is not configured."
+    value: t.Any,
+    config_name: str,
+    default: t.Any = None,
+    required: bool = True,
+    message: str = "CSRF is not configured.",
 ) -> t.Any:
     """Find config value based on provided value, Flask config, and default
     value.
@@ -278,7 +288,9 @@ class CSRFProtect:
 
         g.csrf_valid = True  # mark this request as CSRF valid
 
-    def exempt(self, view: cabc.Callable[..., object] | Blueprint | str) -> cabc.Callable[..., object] | Blueprint | str:
+    def exempt(
+        self, view: cabc.Callable[..., object] | Blueprint | str
+    ) -> cabc.Callable[..., object] | Blueprint | str:
         """Mark a view or blueprint to be excluded from CSRF protection.
 
         ::

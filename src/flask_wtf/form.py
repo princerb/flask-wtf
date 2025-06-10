@@ -25,7 +25,7 @@ except ImportError:
 SUBMIT_METHODS = {"POST", "PUT", "PATCH", "DELETE"}
 _Auto = object()
 
-_AutoType = t.TypeVar('_AutoType', bound=object)
+_AutoType = t.TypeVar("_AutoType", bound=object)
 
 
 class FlaskForm(Form):
@@ -56,7 +56,11 @@ class FlaskForm(Form):
         def csrf_time_limit(self) -> int:
             return current_app.config.get("WTF_CSRF_TIME_LIMIT", 3600)
 
-        def wrap_formdata(self, form: 'FlaskForm', formdata: _AutoType | CombinedMultiDict | ImmutableMultiDict | None) -> CombinedMultiDict | ImmutableMultiDict | None:
+        def wrap_formdata(
+            self,
+            form: FlaskForm,
+            formdata: _AutoType | CombinedMultiDict | ImmutableMultiDict | None,
+        ) -> CombinedMultiDict | ImmutableMultiDict | None:
             if formdata is _Auto:
                 if _is_submitted():
                     if request.files:
@@ -70,7 +74,7 @@ class FlaskForm(Form):
 
             return formdata
 
-        def get_translations(self, form: 'FlaskForm') -> t.Any | None:
+        def get_translations(self, form: FlaskForm) -> t.Any | None:
             if not current_app.config.get("WTF_I18N_ENABLED", True):
                 return super().get_translations(form)
 
@@ -86,7 +90,9 @@ class FlaskForm(Form):
 
         return _is_submitted()
 
-    def validate_on_submit(self, extra_validators: dict[str, t.Any] | None = None) -> bool:
+    def validate_on_submit(
+        self, extra_validators: dict[str, t.Any] | None = None
+    ) -> bool:
         """Call :meth:`validate` only if the form is submitted.
         This is a shortcut for ``form.is_submitted() and form.validate()``.
         """

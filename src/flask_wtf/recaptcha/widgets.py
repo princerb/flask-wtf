@@ -35,7 +35,9 @@ class RecaptchaWidget:
             div_class = RECAPTCHA_DIV_CLASS_DEFAULT
         return Markup(RECAPTCHA_TEMPLATE % (script, div_class, snippet))
 
-    def __call__(self, field: t.Any, error: str | None = None, **kwargs: t.Any) -> Markup:
+    def __call__(
+        self, field: t.Any, error: str | None = None, **kwargs: t.Any
+    ) -> Markup:
         """Returns the recaptcha input HTML."""
 
         try:

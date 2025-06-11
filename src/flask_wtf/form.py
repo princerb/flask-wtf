@@ -25,8 +25,6 @@ except ImportError:
 SUBMIT_METHODS = {"POST", "PUT", "PATCH", "DELETE"}
 _Auto = object()
 
-_AutoType = t.TypeVar("_AutoType", bound=object)
-
 
 class FlaskForm(Form):
     """Flask-specific subclass of WTForms :class:`~wtforms.form.Form`.
@@ -59,7 +57,7 @@ class FlaskForm(Form):
         def wrap_formdata(
             self,
             form: FlaskForm,
-            formdata: _AutoType | CombinedMultiDict | ImmutableMultiDict | None,
+            formdata: object | CombinedMultiDict | ImmutableMultiDict | None,
         ) -> CombinedMultiDict | ImmutableMultiDict | None:
             if formdata is _Auto:
                 if _is_submitted():

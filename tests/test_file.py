@@ -82,7 +82,7 @@ def test_file_allowed_uploadset(app: Flask, form: type[UploadForm]) -> None:
     configure_uploads(app, (txt,))
     form.file.kwargs["validators"] = [FileAllowed(txt)]
 
-    f: type[FlaskForm] = form()
+    f: UploadForm = form()
     assert f.validate()
 
     f = form(file=FileStorage(filename="test.txt"))
